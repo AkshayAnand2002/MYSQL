@@ -1,0 +1,218 @@
+use mavenmovies;
+-- select * from rental;
+-- select * from inventory;
+-- select customer_id,rental_date from rental;
+-- select first_name,last_name,email from customer;
+-- select * from film;
+-- select rating from film;
+-- select distinct rating from film;
+-- select distinct rental_duration from film;
+-- select customer_id,rental_id,amount,payment_date FROM payment where amount=0.99;
+-- select customer_id,rental_id,amount,payment_date FROM payment where payment_date>'2006-01-01';
+-- select * from payment where customer_id <101;-- to select top 100 customers based on customer id
+-- select * from payment where customer_id <=100;-- to select top 100 customers based on customer id
+-- select * from payment where -- customer_id between 1 and 100;-- to select top 100 customers based on customer id
+-- both 1 and 100 are included in between .
+-- select
+-- 	customer_id,
+--    rental_id,
+--    amount,
+--    payment_date
+-- from payment
+-- where amount=0.99
+-- 	and payment_date>'2006-01-01';
+-- below query for payments just over $5 for top 100 customers based on customer_id ,since january 1,2006
+-- select 
+-- 	customer_id,
+--    rental_id,
+--    amount,
+--    payment_date
+-- from payment
+-- where customer_id < 101
+-- 	and amount>= 5
+--    and payment_date >= '2006-01-01';
+-- above query returns customer ids 42,53,60,75.
+-- pull all payments from specific customers found from above along with payment 
+-- over $5 from any customers.
+-- select
+-- 	customer_id,
+--     rental_id,
+--     amount,
+--     payment_date
+-- from payment
+-- where amount > 5
+-- 			or customer_id = 42
+--             or customer_id = 53
+--             or customer_id = 60
+--             or customer_id = 75
+-- select
+-- 	customer_id,
+--     rental_id,
+--     amount,
+--     payment_date
+-- from payment
+-- where customer_id in (42,53,60,75);
+-- select 
+-- 	title, 
+--  description 
+-- from film
+-- where description like '%epic%';
+-- select 
+-- 	title, 
+--  description 
+-- from film
+-- where description not like '%epic%';
+-- below query to pull a list of films with Behind the Scenes special feature.
+-- select 
+-- 	title,
+--     special_features
+-- from film
+-- where special_features like '%Behind the Scenes%';
+-- select
+-- 	rating,
+--     count(film_id)
+-- from film
+-- group by
+-- 		rating;
+-- count of titles sliced by rental duration
+-- select
+--     rental_duration,
+--     count(film_id) as no_of_films_with_this_rental_duration
+-- from film
+-- group by
+-- 		rental_duration;
+-- select * from film;
+-- select
+--     rental_duration,
+--     rating,
+--     count(film_id) as no_of_films_with_this_rental_duration_and_rating
+-- from film
+-- group by
+-- 		rental_duration,
+--         rating;
+-- select
+-- 	rating,
+--     count(film_id) as count_of_films,
+--     min(length) as shortest_film,
+--     max(length) as longest_film,
+--     avg(length) as average_length_of_film,
+--     avg(rental_duration) as average_rental_duration
+-- from film
+-- group by
+-- 		rating;
+-- select
+-- 	replacement_cost,
+--     count(film_id) as no_of_films,
+--     min(rental_rate) as cheapest_rental,
+--     max(rental_rate) as most_expensive_rental,
+--     avg(rental_rate) as avg_rental
+--     from film
+--     group by
+-- 			replacement_cost;
+-- select
+-- 	customer_id,
+--     rental_id,
+--     count(rental_id) as total_rental
+-- from rental
+-- group by
+-- 	customer_id
+-- having count(rental_id)>=30
+-- select
+-- 	customer_id,
+--     rental_id,amount,payment_date
+-- from payment
+-- order by amount desc,customer_id;
+-- above table is ordered acc. to amount in desc and ascending order of id used as tie breaker.
+-- select 
+-- 	title,
+--     length,
+--     rental_rate
+-- from film
+-- order by length desc;
+-- select
+-- 	first_name,
+--     last_name,
+--     case
+-- 		when store_id=1 and active =1 then 'store 1 active'
+--         when store_id=1 and active =0 then 'store 1 inactive'
+--         when store_id=2 and active =1 then 'store 2 active'
+--         when store_id=2 and active =0 then 'store 2 inactive'
+--         else 'check logic'
+-- 	end as store_and_status
+--     from customer
+-- create a table to count no. of customers broken down by store_id in rows and 
+-- active status in columns.
+-- in below query when customer has an active value=1 then we will count their customer_id
+-- same for customer with active value = 0.
+-- select
+-- 	store_id,
+--     count(case when active = 1 then customer_id else null end) as active,
+--     count(case when active = 0 then customer_id else null end) as inactive
+-- from customer
+-- group by 
+-- 	store_id;
+-- select 
+-- 	inventory.inventory_id,
+--     inventory.store_id,
+--     film.title,
+--     film.description
+-- from inventory
+-- 		inner join film
+-- 			on inventory.film_id=film.film_id;
+-- select 
+-- 	actor.first_name,
+-- 	actor.last_name,
+-- 	count(film_actor.film_id) AS number_of_films
+-- from actor
+-- 	left join film_actor
+-- 		on actor.actor_id=film_actor.actor_id
+-- group by 
+-- 	actor.first_name ,
+--     actor.last_name ;
+-- select
+-- 	film.film_id,
+--     film.title,
+--     category.name as category_name
+-- from film
+-- 	inner join film_category
+-- 			on film.film_id=film_category.film_id
+-- 	inner join category
+-- 			on film_category.category_id=category.category_id;
+-- select
+-- 	actor.first_name as actor_first_name,
+--     actor.last_name as actor_last_name,
+--     film.title as film_title
+-- from actor 
+-- 	inner join film_actor
+-- 			on film_actor.actor_id=actor.actor_id
+-- 	inner join film
+-- 			on film.film_id=film_actor.film_id;
+-- select distinct
+-- 		film.title,
+--         film.description
+-- from film
+-- 	inner join inventory
+-- 			on inventory.film_id=film.film_id
+-- where inventory.store_id=2;
+-- BELOW IS MULTICONDITIONAL JOIN OF ABOVE QUERY.
+-- MULTICONDITIONAL JOIN HAS NO USE OF WHERE CLAUSE
+-- AND IS USED.
+-- select distinct
+-- 		film.title,
+--         film.description
+-- from film
+-- 	inner join inventory
+-- 			on inventory.film_id=film.film_id
+--             and inventory.store_id=2; 
+-- union used for appending one table after other.
+-- select
+-- 	'advisor' as type,
+--     first_name,
+--     last_name
+-- from advisor
+-- union
+-- select
+-- 	'investor' as type,
+--     first_name,
+--     last_name
+-- from investor;
